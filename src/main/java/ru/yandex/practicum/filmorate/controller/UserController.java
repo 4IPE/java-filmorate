@@ -33,14 +33,14 @@ public class UserController {
                         user.setName(user.getLogin());
                         userMap.put(user.getId(), user);
                         log.info("Получен запрос к эндпоинту: Post");
-                    }else{
+                    } else{
                         userMap.put(user.getId(), user);
                         log.info("Получен запрос к эндпоинту: Post");
                     }
-                }else{
+                } else{
                     throw new ValidationException("День рождения не может быть в будущем");
                 }
-            }else {
+            } else {
                 log.warn("Получен запрос к эндпоинту: Post,Возникшая ошибка: Некоректный login");
                 throw new ValidationException("Некоректный login");
             }
@@ -58,10 +58,10 @@ public class UserController {
                     userMap.put(user.getId(), user);
                     log.info("Получен запрос к эндпоинту: Post");
                 }
-            }else{
+            } else{
                 throw new ValidationException("День рождения не может быть в будущем");
             }
-        }else {
+        } else {
             log.warn("Получен запрос к эндпоинту: Post,Возникшая ошибка: Некоректный login");
             throw new ValidationException("Некоректный login");
         }
