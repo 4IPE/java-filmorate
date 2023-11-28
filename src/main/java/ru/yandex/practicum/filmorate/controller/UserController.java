@@ -21,23 +21,24 @@ public class UserController {
 
     @GetMapping
     public Map<Integer,User> allUser() {
+
         log.info("Получен запрос к эндпоинту: GET");
         return userMap;
     }
 
     @PostMapping
     public void addUser(@Valid @RequestBody  User user) {
-            if(user.getLogin()!=null && !user.getLogin().isBlank()){
-                if(user.getBirthday().isBefore(LocalDate.now())){
-                    if(user.getName()==null || user.getName().isBlank()){
+            if(user.getLogin()!=null && !user.getLogin().isBlank()) {
+                if(user.getBirthday().isBefore(LocalDate.now())) {
+                    if(user.getName()==null || user.getName().isBlank()) {
                         user.setName(user.getLogin());
                         userMap.put(user.getId(), user);
                         log.info("Получен запрос к эндпоинту: Post");
-                    } else{
+                    } else {
                         userMap.put(user.getId(), user);
                         log.info("Получен запрос к эндпоинту: Post");
                     }
-                } else{
+                } else {
                     throw new ValidationException("День рождения не может быть в будущем");
                 }
             } else {
@@ -48,17 +49,17 @@ public class UserController {
 
     @PutMapping
     public void changeUser(@Valid @RequestBody  User user,HttpServletRequest request) {
-        if(user.getLogin()!=null && !user.getLogin().isBlank()){
-            if(user.getBirthday().isBefore(LocalDate.now())){
-                if(user.getName()==null || user.getName().isBlank()){
+        if(user.getLogin()!=null && !user.getLogin().isBlank()) {
+            if(user.getBirthday().isBefore(LocalDate.now())) {
+                if(user.getName()==null || user.getName().isBlank()) {
                     user.setName(user.getLogin());
                     userMap.put(user.getId(), user);
                     log.info("Получен запрос к эндпоинту: Post");
-                } else{
+                } else {
                     userMap.put(user.getId(), user);
                     log.info("Получен запрос к эндпоинту: Post");
                 }
-            } else{
+            } else {
                 throw new ValidationException("День рождения не может быть в будущем");
             }
         } else {
