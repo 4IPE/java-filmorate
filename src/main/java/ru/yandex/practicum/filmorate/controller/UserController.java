@@ -12,46 +12,45 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-
 @RestController
 @RequestMapping("/user")
 @Slf4j
 public class UserController {
-    Map<Integer,User> userMap = new HashMap<>();
+    Map<Integer, User> userMap = new HashMap<>();
 
     @GetMapping
-    public Map<Integer,User> allUser() {
+    public Map<Integer, User> allUser() {
 
         log.info("Получен запрос к эндпоинту: GET");
         return userMap;
     }
 
     @PostMapping
-    public void addUser(@Valid @RequestBody  User user) {
-            if(user.getLogin()!=null && !user.getLogin().isBlank()) {
-                if(user.getBirthday().isBefore(LocalDate.now())) {
-                    if(user.getName()==null || user.getName().isBlank()) {
-                        user.setName(user.getLogin());
-                        userMap.put(user.getId(), user);
-                        log.info("Получен запрос к эндпоинту: Post");
-                    } else {
-                        userMap.put(user.getId(), user);
-                        log.info("Получен запрос к эндпоинту: Post");
-                    }
+    public void addUser(@Valid @RequestBody User user) {
+        if (user.getLogin() != null && !user.getLogin().isBlank()) {
+            if (user.getBirthday().isBefore(LocalDate.now())) {
+                if (user.getName() == null || user.getName().isBlank()) {
+                    user.setName(user.getLogin());
+                    userMap.put(user.getId(), user);
+                    log.info("Получен запрос к эндпоинту: Post");
                 } else {
-                    throw new ValidationException("День рождения не может быть в будущем");
+                    userMap.put(user.getId(), user);
+                    log.info("Получен запрос к эндпоинту: Post");
                 }
             } else {
-                log.warn("Получен запрос к эндпоинту: Post,Возникшая ошибка: Некоректный login");
-                throw new ValidationException("Некоректный login");
+                throw new ValidationException("День рождения не может быть в будущем");
             }
+        } else {
+            log.warn("Получен запрос к эндпоинту: Post,Возникшая ошибка: Некоректный login");
+            throw new ValidationException("Некоректный login");
         }
+    }
 
     @PutMapping
-    public void changeUser(@Valid @RequestBody  User user,HttpServletRequest request) {
-        if(user.getLogin()!=null && !user.getLogin().isBlank()) {
-            if(user.getBirthday().isBefore(LocalDate.now())) {
-                if(user.getName()==null || user.getName().isBlank()) {
+    public void changeUser(@Valid @RequestBody User user, HttpServletRequest request) {
+        if (user.getLogin() != null && !user.getLogin().isBlank()) {
+            if (user.getBirthday().isBefore(LocalDate.now())) {
+                if (user.getName() == null || user.getName().isBlank()) {
                     user.setName(user.getLogin());
                     userMap.put(user.getId(), user);
                     log.info("Получен запрос к эндпоинту: Post");
