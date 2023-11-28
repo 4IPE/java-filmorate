@@ -17,15 +17,16 @@ import java.util.Map;
 @RequestMapping("/user")
 @Slf4j
 public class UserController {
-    Map<Integer,User> userMap = new HashMap<Integer,User>();
+    Map<Integer,User> userMap = new HashMap<>();
 
     @GetMapping
-    public Map<Integer,User> allUser(){
+    public Map<Integer,User> allUser() {
         log.info("Получен запрос к эндпоинту: GET");
         return userMap;
     }
+
     @PostMapping
-    public void addUser(@Valid @RequestBody  User user){
+    public void addUser(@Valid @RequestBody  User user) {
             if(user.getLogin()!=null && !user.getLogin().isBlank()){
                 if(user.getBirthday().isBefore(LocalDate.now())){
                     if(user.getName()==null || user.getName().isBlank()){
@@ -47,8 +48,9 @@ public class UserController {
                 throw new ValidationException("Некоректный login");
             }
         }
+
     @PutMapping
-    public void changeUser(@Valid @RequestBody  User user,HttpServletRequest request){
+    public void changeUser(@Valid @RequestBody  User user,HttpServletRequest request) {
         if(user.getEmail().contains("@")) {
             if(user.getLogin()!=null && !user.getLogin().isBlank()){
                 if(user.getBirthday().isBefore(LocalDate.now())){

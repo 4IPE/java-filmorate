@@ -35,7 +35,7 @@ class FilmorateApplicationTests {
 	}
 
 	@BeforeEach
-	public void beforeEach(){
+	public void beforeEach() {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		validator = factory.getValidator();
 	}
@@ -62,9 +62,8 @@ class FilmorateApplicationTests {
 	}
 
 	@Test
-	public void filmControllerTest(){
+	public void filmControllerTest() {
 		Film film1 = new Film(0,"Описание",LocalDate.of(1894,12,12),12);
-
 		film1.setName(null);
 		Set<ConstraintViolation<Film>> violations = validator.validate(film1);
 		assertFalse(violations.isEmpty());
