@@ -1,69 +1,60 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.time.LocalDate;
+
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 @Slf4j
 public class UserController {
     Map<Integer, User> userMap = new HashMap<>();
+    private int countId = 1;
 
     @GetMapping
-    public Map<Integer, User> allUser() {
-
+    public Collection<User> allUser() {
         log.info("Получен запрос к эндпоинту: GET");
-        return userMap;
+        return userMap.values();
     }
 
     @PostMapping
-    public void addUser(@Valid @RequestBody User user) {
-        if (user.getLogin() != null && !user.getLogin().isBlank()) {
-            if (user.getBirthday().isBefore(LocalDate.now())) {
-                if (user.getName() == null || user.getName().isBlank()) {
-                    user.setName(user.getLogin());
-                    userMap.put(user.getId(), user);
-                    log.info("Получен запрос к эндпоинту: Post");
-                } else {
-                    userMap.put(user.getId(), user);
-                    log.info("Получен запрос к эндпоинту: Post");
-                }
-            } else {
-                throw new ValidationException("День рождения не может быть в будущем");
-            }
+    public User addUser(@Valid @RequestBody User user) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+            user.setId(countId++);
+            userMap.put(user.getId(), user);
+            log.info("Получен запрос к эндпоинту: POST");
+            return user;
         } else {
-            log.warn("Получен запрос к эндпоинту: Post,Возникшая ошибка: Некоректный login");
-            throw new ValidationException("Некоректный login");
+            user.setId(countId++);
+            userMap.put(user.getId(), user);
+            log.info("Получен запрос к эндпоинту: POST");
+            return user;
         }
     }
 
     @PutMapping
-    public void changeUser(@Valid @RequestBody User user, HttpServletRequest request) {
-        if (user.getLogin() != null && !user.getLogin().isBlank()) {
-            if (user.getBirthday().isBefore(LocalDate.now())) {
-                if (user.getName() == null || user.getName().isBlank()) {
-                    user.setName(user.getLogin());
-                    userMap.put(user.getId(), user);
-                    log.info("Получен запрос к эндпоинту: Post");
-                } else {
-                    userMap.put(user.getId(), user);
-                    log.info("Получен запрос к эндпоинту: Post");
-                }
-            } else {
-                throw new ValidationException("День рождения не может быть в будущем");
+    public User changeUser(@Valid @RequestBody User user) {
+        if (userMap.containsKey(user.getId())) {
+            if (user.getName() == null || user.getName().isBlank()) {
+                user.setName(user.getLogin());
+                userMap.put(user.getId(), user);
+                log.info("Получен запрос к эндпоинту: PUT");
+                return user;
             }
+            userMap.put(user.getId(), user);
+            log.info("Получен запрос к эндпоинту: PUT");
+            return user;
         } else {
-            log.warn("Получен запрос к эндпоинту: Post,Возникшая ошибка: Некоректный login");
-            throw new ValidationException("Некоректный login");
+            throw new ValidationException("Такого пользователя не существует");
         }
     }
 
