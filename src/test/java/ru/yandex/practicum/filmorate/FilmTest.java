@@ -98,7 +98,7 @@ public class FilmTest {
     }
 
     @Test
-    public void PutTestFail() {
+    public void putTestFail() {
         Throwable exc = assertThrows(ValidationException.class, () -> filmController.changeFilm(new Film("Описание", LocalDate.of(2023, 12, 12), 12)));
         assertEquals("Такого фильма не существует", exc.getMessage());
     }
