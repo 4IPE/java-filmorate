@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate;
 
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
@@ -15,7 +14,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
 import java.util.Set;
-import java.util.stream.Stream;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
