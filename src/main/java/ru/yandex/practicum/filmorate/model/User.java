@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Data
 public class User {
     private int id;
-    @Email
+    @Email(message = "Некорректный email")
     private String email;
     private String name;
     @NotBlank(message = "Логин не может быть путсым")
