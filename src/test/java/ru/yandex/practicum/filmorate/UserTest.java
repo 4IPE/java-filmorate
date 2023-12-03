@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.test;
+package ru.yandex.practicum.filmorate;
 
 
 import org.junit.jupiter.api.BeforeAll;
@@ -40,33 +40,53 @@ public class UserTest {
         User user2 = new User("dan", LocalDate.of(2021, 12, 12));
         User user3 = new User("    ", LocalDate.of(2021, 12, 12));
         User user4 = new User("dan", LocalDate.of(2025, 12, 12));
-
+        user3.setEmail("dam22@mail.ru");
+        user4.setEmail("dam22@mail.ru");
         user2.setEmail("@FDSGF");
+
         Set<ConstraintViolation<User>> violations1 = validator.validate(user2);
         assertFalse(violations1.isEmpty());
+        violations1.stream()
+                .map(ConstraintViolation::getMessage)
+                .forEach(val -> assertTrue(val.contains("Некорректный email")));
 
 
         Set<ConstraintViolation<User>> violations2 = validator.validate(user3);
         assertFalse(violations2.isEmpty());
+        violations2.stream()
+                .map(ConstraintViolation::getMessage)
+                .forEach(val -> assertTrue(val.contains("Логин не может быть путсым")));
 
 
         Set<ConstraintViolation<User>> violations3 = validator.validate(user4);
         assertFalse(violations3.isEmpty());
-
-        User user = new User("dan", LocalDate.of(2021, 12, 12));
-        userController.addUser(user);
-        assertFalse(userController.allUser().isEmpty());
+        violations3.stream()
+                .map(ConstraintViolation::getMessage)
+                .forEach(val -> assertTrue(val.contains("День рождения не может быть в будущем")));
 
     }
 
     @Test
-    public void putTest() {
+    public void postTestSuccess() {
+        User user = new User("dan", LocalDate.of(2021, 12, 12));
+        user.setEmail("dan123@mail.ru");
+        Set<ConstraintViolation<User>> violations1 = validator.validate(user);
+        assertTrue(violations1.isEmpty());
+        userController.addUser(user);
+        assertFalse(userController.allUser().isEmpty());
+    }
+
+    @Test
+    public void putTestSuccess() {
         User user2 = new User("dan", LocalDate.of(2021, 12, 12));
         userController.addUser(user2);
         User newUser = new User("danNew", LocalDate.of(2021, 12, 12));
         newUser.setId(user2.getId());
         userController.changeUser(newUser);
+    }
 
+    @Test
+    public void putTestFail() {
         Throwable exc = assertThrows(ValidationException.class, () -> userController.changeUser(new User("dan", LocalDate.of(2021, 12, 12))));
         assertEquals("Такого пользователя не существует", exc.getMessage());
     }
