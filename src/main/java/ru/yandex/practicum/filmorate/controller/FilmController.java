@@ -2,46 +2,68 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
-@RequestMapping("/films")
+@RequestMapping
 @Slf4j
 
 public class FilmController {
-    private Map<Integer, Film> filmMap = new HashMap<>();
-    private int countId = 1;
 
-    @GetMapping
+    private final FilmStorage filmStorage;
+    private final FilmService filmService;
+
+    public FilmController(FilmStorage filmStorage, FilmService filmService) {
+        this.filmStorage = filmStorage;
+        this.filmService = filmService;
+    }
+
+    @GetMapping("/films")
     public Collection<Film> allFilm() {
         log.info("Получен запрос к эндпоинту: GET");
-        return filmMap.values();
+        return filmStorage.allFilm();
     }
 
-    @PostMapping
+    @GetMapping("/films/{id}")
+    public Film filmById(@PathVariable int id) {
+        log.info("Получен запрос к эндпоинту: GET");
+        return filmStorage.getFilmByID(id);
+    }
+
+    @GetMapping("films/popular")
+    public Collection<Film> popularFilm(@RequestParam(value = "count", defaultValue = "10", required = false) Integer count) {
+        return filmService.popularFilm(count);
+    }
+
+    @PostMapping("/films")
     public Film addFilm(@Valid @RequestBody Film film) {
-        film.setId(countId++);
-        filmMap.put(film.getId(), film);
         log.info("Получен запрос к эндпоинту: POST");
-        return film;
+        return filmStorage.addFilm(film);
     }
 
-    @PutMapping
+    @PutMapping("/films")
     public Film changeFilm(@Valid @RequestBody Film film) {
-        if (filmMap.containsKey(film.getId())) {
-            filmMap.put(film.getId(), film);
-            log.info("Получен запрос к эндпоинту: PUT");
-            return film;
-        } else {
-            throw new ValidationException("Такого фильма не существует");
-        }
-
+        log.info("Получен запрос к эндпоинту: PUT");
+        return filmStorage.changeFilm(film);
     }
+
+    @PutMapping("/films/{id}/like/{userId}")
+    public Film addLike(@PathVariable int id, @PathVariable int userId) {
+        log.info("Получен запрос к эндпоинту: PUT");
+        return filmService.addLike(id, userId);
+    }
+
+    @DeleteMapping("/films/{id}/like/{userId}")
+    public Film removeLike(@PathVariable int id, @PathVariable int userId) {
+        log.info("Получен запрос к эндпоинту: DELETE");
+        return filmService.dislike(id, userId);
+    }
+
+
 }
