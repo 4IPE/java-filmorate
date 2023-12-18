@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 
-import ru.yandex.practicum.filmorate.exception.NotFoundError;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -37,7 +37,7 @@ public class FilmTest {
         filmStorage = new InMemoryFilmStorage();
         userStorage = new InMemoryUserStorage();
         filmService = new FilmService(filmStorage, userStorage);
-        filmController = new FilmController(filmStorage, filmService);
+        filmController = new FilmController(filmService);
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
     }
@@ -110,7 +110,7 @@ public class FilmTest {
 
     @Test
     public void putTestFail() {
-        Throwable exc = assertThrows(NotFoundError.class, () -> filmController.changeFilm(new Film("Описание", LocalDate.of(2023, 12, 12), 12)));
+        Throwable exc = assertThrows(NotFoundException.class, () -> filmController.changeFilm(new Film("Описание", LocalDate.of(2023, 12, 12), 12)));
         assertEquals("Filmс индефикатором 0 не найден", exc.getMessage());
     }
 

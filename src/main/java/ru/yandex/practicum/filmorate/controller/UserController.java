@@ -1,11 +1,11 @@
 package ru.yandex.practicum.filmorate.controller;
 
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 
 import javax.validation.Valid;
@@ -15,25 +15,22 @@ import java.util.Collection;
 @RestController
 @RequestMapping
 @Slf4j
+@RequiredArgsConstructor
 public class UserController {
-    private final UserStorage userStorage;
+
     private final UserService userService;
 
-    public UserController(UserStorage userStorage, UserService userService) {
-        this.userStorage = userStorage;
-        this.userService = userService;
-    }
 
     @GetMapping("/users")
     public Collection<User> allUser() {
         log.info("Получен запрос к эндпоинту: GET");
-        return userStorage.allUser();
+        return userService.allUser();
     }
 
     @GetMapping("/users/{id}")
     public User userById(@PathVariable int id) {
         log.info("Получен запрос к эндпоинту: GET");
-        return userStorage.getUserById(id);
+        return userService.getUserById(id);
     }
 
     @GetMapping("/users/{id}/friends")
@@ -50,14 +47,14 @@ public class UserController {
     @PostMapping("/users")
     public User addUser(@Valid @RequestBody User user) {
         log.info("Получен запрос к эндпоинту: POST");
-        return userStorage.addUser(user);
+        return userService.addUser(user);
 
     }
 
     @PutMapping("/users")
     public User changeUser(@Valid @RequestBody User user) {
         log.info("Получен запрос к эндпоинту: PUT");
-        return userStorage.changeUser(user);
+        return userService.changeUser(user);
     }
 
     @PutMapping("/users/{id}/friends/{friendId}")

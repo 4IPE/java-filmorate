@@ -2,8 +2,8 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundError;
-import ru.yandex.practicum.filmorate.exception.PossibleAction;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.PossibleActionException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -26,10 +26,28 @@ public class FilmService {
         this.userStorage = userStorage;
     }
 
+    public Collection<Film> allFilm() {
+        return filmStorage.allFilm();
+    }
+
+
+    public Film getFilmByID(int id) {
+        return filmStorage.getFilmByID(id);
+    }
+
+    public Film addFilm(Film film) {
+        return filmStorage.addFilm(film);
+    }
+
+    public Film changeFilm(Film film) {
+        return filmStorage.changeFilm(film);
+
+    }
+
     public Film addLike(int filmId, int userId) {
         Film film = filmStorage.getFilmByID(filmId);
         if (film == null) {
-            throw new NotFoundError(Film.class, filmId);
+            throw new NotFoundException(Film.class, filmId);
         }
         if (!film.getLikesOfUsers().contains(userStorage.getUserById(userId))) {
             film.setLike(film.getLike() + 1);
@@ -42,14 +60,14 @@ public class FilmService {
     public Film dislike(int filmId, int userId) {
         Film film = filmStorage.getFilmByID(filmId);
         if (film == null) {
-            throw new NotFoundError(Film.class, filmId);
+            throw new NotFoundException(Film.class, filmId);
         }
         if (film.getLike() > 0) {
             film.setLike(film.getLike() - 1);
             film.getLikesOfUsers().remove(userStorage.getUserById(userId));
             return film;
         }
-        throw new PossibleAction("Нельзя убирать лайк тому посту которому не был поставлен лайк");
+        throw new PossibleActionException("Нельзя убирать лайк тому посту которому не был поставлен лайк");
     }
 
     public Collection<Film> popularFilm(Integer size) {

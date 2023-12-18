@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.filmorate.exception.NotFoundError;
-import ru.yandex.practicum.filmorate.exception.PossibleAction;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.PossibleActionException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
 
@@ -24,13 +24,13 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> notFound(final NotFoundError e) {
+    public Map<String, String> notFound(final NotFoundException e) {
         return Map.of("Not Found", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> argError(final PossibleAction e) {
+    public Map<String, String> argError(final PossibleActionException e) {
         return Map.of("Possible action", e.getMessage());
     }
 

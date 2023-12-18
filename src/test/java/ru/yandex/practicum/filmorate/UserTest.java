@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import ru.yandex.practicum.filmorate.controller.UserController;
-import ru.yandex.practicum.filmorate.exception.NotFoundError;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
@@ -33,7 +33,7 @@ public class UserTest {
     public static void beforeAll() {
         userStorage = new InMemoryUserStorage();
         userService = new UserService(userStorage);
-        userController = new UserController(userStorage, userService);
+        userController = new UserController(userService);
     }
 
     @BeforeEach
@@ -94,7 +94,7 @@ public class UserTest {
 
     @Test
     public void putTestFail() {
-        Throwable exc = assertThrows(NotFoundError.class, () -> userController.changeUser(new User("dan", LocalDate.of(2021, 12, 12))));
+        Throwable exc = assertThrows(NotFoundException.class, () -> userController.changeUser(new User("dan", LocalDate.of(2021, 12, 12))));
         assertEquals("Userс индефикатором 0 не найден", exc.getMessage());
     }
 }
