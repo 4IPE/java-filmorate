@@ -8,8 +8,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import ru.yandex.practicum.filmorate.controller.UserController;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -22,11 +25,15 @@ public class UserTest {
 
     private static UserController userController;
     private Validator validator;
+    private static UserStorage userStorage;
+    private static UserService userService;
 
 
     @BeforeAll
     public static void beforeAll() {
-        userController = new UserController();
+        userStorage = new InMemoryUserStorage();
+        userService = new UserService(userStorage);
+        userController = new UserController(userService);
     }
 
     @BeforeEach
@@ -87,7 +94,7 @@ public class UserTest {
 
     @Test
     public void putTestFail() {
-        Throwable exc = assertThrows(ValidationException.class, () -> userController.changeUser(new User("dan", LocalDate.of(2021, 12, 12))));
-        assertEquals("Такого пользователя не существует", exc.getMessage());
+        Throwable exc = assertThrows(NotFoundException.class, () -> userController.changeUser(new User("dan", LocalDate.of(2021, 12, 12))));
+        assertEquals("Userс индефикатором 0 не найден", exc.getMessage());
     }
 }

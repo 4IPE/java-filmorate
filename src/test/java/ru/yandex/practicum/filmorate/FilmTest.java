@@ -5,8 +5,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -22,11 +27,17 @@ public class FilmTest {
 
     private Validator validator;
     private static FilmController filmController;
+    private static FilmStorage filmStorage;
+    private static UserStorage userStorage;
+    private static FilmService filmService;
 
 
     @BeforeEach
     public void beforeEach() {
-        filmController = new FilmController();
+        filmStorage = new InMemoryFilmStorage();
+        userStorage = new InMemoryUserStorage();
+        filmService = new FilmService(filmStorage, userStorage);
+        filmController = new FilmController(filmService);
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
     }
@@ -99,8 +110,8 @@ public class FilmTest {
 
     @Test
     public void putTestFail() {
-        Throwable exc = assertThrows(ValidationException.class, () -> filmController.changeFilm(new Film("Описание", LocalDate.of(2023, 12, 12), 12)));
-        assertEquals("Такого фильма не существует", exc.getMessage());
+        Throwable exc = assertThrows(NotFoundException.class, () -> filmController.changeFilm(new Film("Описание", LocalDate.of(2023, 12, 12), 12)));
+        assertEquals("Filmс индефикатором 0 не найден", exc.getMessage());
     }
 
 
