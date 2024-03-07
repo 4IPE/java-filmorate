@@ -22,7 +22,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<User> allUser() {
-        List<User> userList = jdbcTemplate.query("SELECT u.* FROM USERS u", userRowMapper());
+        Collection<User> userList = jdbcTemplate.query("SELECT u.* FROM USERS u", userRowMapper());
         return userList;
     }
 

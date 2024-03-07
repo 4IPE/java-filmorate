@@ -1,14 +1,11 @@
 package ru.yandex.practicum.filmorate;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.UserDbStorage;
@@ -25,7 +22,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class FilmDbStorageTest {
     private final JdbcTemplate jdbcTemplate;
 
-    //TODO UPDATE METHOD
     @Test
     public void testAllFilm() {
         Film filmF = new Film("Description 1 ", LocalDate.of(1900, 12, 1), 100);
