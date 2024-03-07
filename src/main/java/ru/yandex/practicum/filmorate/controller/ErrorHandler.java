@@ -34,6 +34,7 @@ public class ErrorHandler {
     public Map<String, String> argError(final PossibleActionException e) {
         return Map.of("Possible action", e.getMessage());
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> argError(final EmptyResultDataAccessException e) {
@@ -44,7 +45,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleThrowable(final Throwable e) {
         return new ErrorResponse(
-                "Произошла непредвиденная ошибка.",e
+                "Произошла непредвиденная ошибка.", e
         );
     }
 

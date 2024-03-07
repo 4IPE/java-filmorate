@@ -63,22 +63,25 @@ public class FilmController {
     }
 
     @GetMapping("/genres")
-    public Collection<Genre> allGenres(){
+    public Collection<Genre> allGenres() {
         log.info("Получен запрос к эндпоинту: GET");
         return filmService.allGenre();
     }
+
     @GetMapping("/genres/{id}")
-    public Genre getGenreById(@PathVariable int id){
+    public Genre getGenreById(@PathVariable int id) {
         log.info("Получен запрос к эндпоинту: GET");
         return filmService.getGenreById(id);
     }
+
     @GetMapping("/mpa")
-    public Collection<Mpa> allMpa(){
+    public Collection<Mpa> allMpa() {
         log.info("Получен запрос к эндпоинту: GET");
         return filmService.allMpa();
     }
+
     @GetMapping("/mpa/{id}")
-    public Mpa getMpaById(@PathVariable int id){
+    public Mpa getMpaById(@PathVariable int id) {
         log.info("Получен запрос к эндпоинту: GET");
         return filmService.getMpaById(id);
     }
