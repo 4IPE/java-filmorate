@@ -56,8 +56,8 @@ public class UserDbStorage implements UserStorage {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName("friend")
                 .usingGeneratedKeyColumns("id_friend");
-        Map<String, Object> params = Map.of("id_user", friend.getId_user(),
-                "id_user_friend", friend.getId_user_friend(),
+        Map<String, Object> params = Map.of("id_user", friend.getIdUser(),
+                "id_user_friend", friend.getIdUserFriend(),
                 "status", friend.isStatus());
         Number id = simpleJdbcInsert.executeAndReturnKey(params);
         friend.setId(id.intValue());

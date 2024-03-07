@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class Friend {
     private int id;
-    private final int id_user;
-    private final int id_user_friend;
+    private final int idUser;
+    private final int idUserFriend;
     private boolean status = false;
 }
