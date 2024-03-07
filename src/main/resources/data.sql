@@ -1,0 +1,2 @@
+INSERT INTO genresName("NAME") VALUES  ('Комедия'),('Драма'),('Мультфильм'),('Триллер'),('Документальный'),('Боевик');
+INSERT INTO ratingName("RATING_NAME") VALUES   ('G'),('PG'),('PG-13'),('R'),('NC-17');
