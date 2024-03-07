@@ -46,8 +46,8 @@ public class FilmDbStorage implements FilmStorage {
                 "description", film.getDescription(),
                 "releasedate", film.getReleaseDate(),
                 "duration", film.getDuration());
-        Number id_film = simpleJdbcInsert.executeAndReturnKey(params);
-        film.setId(id_film.intValue());
+        Number idFilm = simpleJdbcInsert.executeAndReturnKey(params);
+        film.setId(idFilm.intValue());
         if (film.getMpa() != null) {
             Mpa mpa = jdbcTemplate.queryForObject("select * from ratingname where id_rating = ?",
                     (rs, rowNum) -> new Mpa(rs.getInt("id_rating"), rs.getString("rating_name")), film.getMpa().getId());
