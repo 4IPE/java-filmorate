@@ -52,7 +52,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public Friend addFriend(Friend friend) {
+    public void addFriend(Friend friend) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName("friend")
                 .usingGeneratedKeyColumns("id_friend");
@@ -61,7 +61,6 @@ public class UserDbStorage implements UserStorage {
                 "status", friend.isStatus());
         Number id = simpleJdbcInsert.executeAndReturnKey(params);
         friend.setId(id.intValue());
-        return friend;
     }
 
 

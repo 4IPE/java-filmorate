@@ -85,7 +85,7 @@ public class UserService {
         return userStorage.getUserById(mainUserId);
     }
 
-    public Collection<User> checkCommonFriends(int mainUserID, int otherId) {
+    public Collection<User> getCommonFriends(int mainUserID, int otherId) {
         return allFriends(mainUserID).stream()
                 .filter(user -> allFriends(otherId).contains(user))
                 .collect(Collectors.toList());

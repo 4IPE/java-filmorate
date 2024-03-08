@@ -56,8 +56,8 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public Friend addFriend(Friend friend) {
-        return null;
+    public void addFriend(Friend friend) {
+
     }
 
     @Override

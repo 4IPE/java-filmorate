@@ -192,7 +192,7 @@ public class UserDbStorageTest {
         assertThat(commonUser)
                 .isNotNull()
                 .usingRecursiveComparison()
-                .isEqualTo(userService.checkCommonFriends(userF.getId(), userF.getId()));
+                .isEqualTo(userService.getCommonFriends(userF.getId(), userF.getId()));
     }
 
 

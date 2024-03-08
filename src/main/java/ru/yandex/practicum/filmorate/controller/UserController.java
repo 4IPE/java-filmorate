@@ -41,7 +41,7 @@ public class UserController {
 
     @GetMapping("/users/{id}/friends/common/{otherId}")
     public Collection<User> commonFriends(@PathVariable int id, @PathVariable int otherId) {
-        return userService.checkCommonFriends(id, otherId);
+        return userService.getCommonFriends(id, otherId);
     }
 
     @PostMapping("/users")
