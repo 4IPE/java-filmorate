@@ -43,11 +43,9 @@ public class UserService {
 
     public Collection<User> allFriends(int idUser) {
         if (userStorage.getUserById(idUser) != null) {
-            int i = userStorage.getUserById(idUser).getFriends().size();
-            Collection<User> users = userStorage.getUserById(idUser).getFriends().stream()
+            return userStorage.getUserById(idUser).getFriends().stream()
                     .map(userStorage::getUserById)
                     .collect(Collectors.toList());
-            return users;
         }
         throw new NotFoundException(User.class, idUser);
     }
