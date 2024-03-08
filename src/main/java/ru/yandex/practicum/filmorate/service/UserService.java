@@ -83,9 +83,6 @@ public class UserService {
         if (friend == null) {
             throw new NotFoundException(User.class, friendId);
         }
-        if (!mainUser.getFriends().contains(friendId)) {
-            throw new ValidationException("У пользователя с ID:" + mainUserId + "нету друга с ID" + friendId);
-        }
         userStorage.getUserById(mainUserId).getFriends().remove(friendId);
         userStorage.deleteFriend(mainUserId, friendId);
         return userStorage.getUserById(mainUserId);

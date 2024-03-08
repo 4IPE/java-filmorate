@@ -2,11 +2,13 @@ package ru.yandex.practicum.filmorate.storage;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -15,6 +17,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Qualifier("filmDbStorage")
@@ -49,25 +52,29 @@ public class FilmDbStorage implements FilmStorage {
         Number idFilm = simpleJdbcInsert.executeAndReturnKey(params);
         film.setId(idFilm.intValue());
         if (film.getMpa() != null) {
-            Mpa mpa = jdbcTemplate.queryForObject("select * from ratingname where id_rating = ?",
-                    (rs, rowNum) -> new Mpa(rs.getInt("id_rating"), rs.getString("rating_name")), film.getMpa().getId());
-            film.setMpa(mpa);
-            SimpleJdbcInsert simpleJdbcInsertRating = new SimpleJdbcInsert(jdbcTemplate.getDataSource()).withTableName("ratingfilm");
-            Map<String, Integer> paramsRating = Map.of("id_film", film.getId(),
-                    "id_rating", film.getMpa().getId());
-            simpleJdbcInsertRating.execute(paramsRating);
+            try {
+                Mpa mpa = jdbcTemplate.queryForObject("select * from ratingname where id_rating = ?",
+                        (rs, rowNum) -> new Mpa(rs.getInt("id_rating"), rs.getString("rating_name")), film.getMpa().getId());
+                film.setMpa(mpa);
+                SimpleJdbcInsert simpleJdbcInsertRating = new SimpleJdbcInsert(jdbcTemplate.getDataSource()).withTableName("ratingfilm");
+                Map<String, Integer> paramsRating = Map.of("id_film", film.getId(),
+                        "id_rating", film.getMpa().getId());
+                simpleJdbcInsertRating.execute(paramsRating);
+            } catch (Throwable e) {
+                throw new ValidationException(e.getMessage());
+            }
         }
         if (!film.getGenres().isEmpty()) {
             SimpleJdbcInsert simpleJdbcInsertGenre = new SimpleJdbcInsert(jdbcTemplate.getDataSource()).withTableName("genresfilm");
-            Map<String, Integer> paramsGenre = new HashMap<>();
             for (Genre genre : film.getGenres()) {
+                Map<String, Integer> paramsGenre = new HashMap<>();
                 paramsGenre.put("id_film", film.getId());
                 paramsGenre.put("id_genres", genre.getId());
+                simpleJdbcInsertGenre.execute(paramsGenre);
             }
-            simpleJdbcInsertGenre.execute(paramsGenre);
             List<Genre> genres = jdbcTemplate.query("select * from genresFilm as gf join genresName as gn on gf.id_genres = gn.id_genres where gf.id_film =?",
                     genreRowMapper(), film.getId());
-            film.setGenres(new HashSet<>(genres));
+            film.setGenres(new TreeSet<>(genres));
 
         }
         return film;
