@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 
@@ -58,6 +60,30 @@ public class FilmController {
     public Film removeLike(@PathVariable int id, @PathVariable int userId) {
         log.info("Получен запрос к эндпоинту: DELETE");
         return filmService.dislike(id, userId);
+    }
+
+    @GetMapping("/genres")
+    public Collection<Genre> allGenres() {
+        log.info("Получен запрос к эндпоинту: GET");
+        return filmService.allGenre();
+    }
+
+    @GetMapping("/genres/{id}")
+    public Genre getGenreById(@PathVariable int id) {
+        log.info("Получен запрос к эндпоинту: GET");
+        return filmService.getGenreById(id);
+    }
+
+    @GetMapping("/mpa")
+    public Collection<Mpa> allMpa() {
+        log.info("Получен запрос к эндпоинту: GET");
+        return filmService.allMpa();
+    }
+
+    @GetMapping("/mpa/{id}")
+    public Mpa getMpaById(@PathVariable int id) {
+        log.info("Получен запрос к эндпоинту: GET");
+        return filmService.getMpaById(id);
     }
 
 

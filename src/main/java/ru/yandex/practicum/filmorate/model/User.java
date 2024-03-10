@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 
 import lombok.*;
+import ru.yandex.practicum.filmorate.annotation.NameNull;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -12,6 +13,7 @@ import java.util.Set;
 
 
 @Data
+@NameNull
 public class User {
     private int id;
     @Email(message = "Некорректный email")
@@ -22,6 +24,5 @@ public class User {
     @PastOrPresent(message = "День рождения не может быть в будущем")
     private final LocalDate birthday;
     private Set<Integer> friends = new HashSet<>();
-
-
+    private boolean status = false;
 }

@@ -1,11 +1,14 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.PossibleActionException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -18,12 +21,11 @@ import java.util.stream.Collectors;
 public class FilmService {
 
     private final FilmStorage filmStorage;
-    private final UserStorage userStorage;
+
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage, @Qualifier("userDbStorage") UserStorage userStorage) {
         this.filmStorage = filmStorage;
-        this.userStorage = userStorage;
     }
 
     public Collection<Film> allFilm() {
@@ -49,10 +51,10 @@ public class FilmService {
         if (film == null) {
             throw new NotFoundException(Film.class, filmId);
         }
-        if (!film.getLikesOfUsers().contains(userStorage.getUserById(userId))) {
-            film.setLike(film.getLike() + 1);
-            film.getLikesOfUsers().add(userStorage.getUserById(userId));
-            return film;
+        if (!film.getLikesOfUsers().contains(userId)) {
+            film.getLikesOfUsers().add(userId);
+            film.setLike(film.getLikesOfUsers().size());
+            return filmStorage.addLike(filmId, userId);
         }
         throw new ValidationException("Нельзя ставить несколько лайков одному фильму");
     }
@@ -63,9 +65,9 @@ public class FilmService {
             throw new NotFoundException(Film.class, filmId);
         }
         if (film.getLike() > 0) {
-            film.setLike(film.getLike() - 1);
-            film.getLikesOfUsers().remove(userStorage.getUserById(userId));
-            return film;
+            film.getLikesOfUsers().remove(userId);
+            film.setLike(film.getLikesOfUsers().size());
+            return filmStorage.deleteLike(filmId, userId);
         }
         throw new PossibleActionException("Нельзя убирать лайк тому посту которому не был поставлен лайк");
     }
@@ -75,6 +77,22 @@ public class FilmService {
                 .sorted(Comparator.comparing(Film::getLike).reversed())
                 .limit(size)
                 .collect(Collectors.toList());
+    }
+
+    public Collection<Genre> allGenre() {
+        return filmStorage.allGenre();
+    }
+
+    public Genre getGenreById(int id) {
+        return filmStorage.getGenreById(id);
+    }
+
+    public Collection<Mpa> allMpa() {
+        return filmStorage.allMpa();
+    }
+
+    public Mpa getMpaById(int id) {
+        return filmStorage.getMpaById(id);
     }
 
 

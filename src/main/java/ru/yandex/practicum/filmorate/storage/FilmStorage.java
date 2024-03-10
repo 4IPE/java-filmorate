@@ -1,15 +1,33 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface FilmStorage {
-    public Collection<Film> allFilm();
+    Collection<Film> allFilm();
 
-    public Film addFilm(Film film);
+    Film addFilm(Film film);
 
-    public Film changeFilm(Film film);
+    Film changeFilm(Film film);
 
-    public Film getFilmByID(int id);
+    Film getFilmByID(int id);
+
+    Collection<Genre> allGenre();
+
+    Collection<Mpa> allMpa();
+
+    Genre getGenreById(int id);
+
+    Mpa getMpaById(int id);
+
+    Film addLike(int filmId, int userId);
+
+    Film deleteLike(int filmId, int userId);
+
+    List<User> getLikeForFilm(int id);
 }

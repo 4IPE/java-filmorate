@@ -6,8 +6,7 @@ import ru.yandex.practicum.filmorate.annotation.DateCheck;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Data
 public class Film {
@@ -20,8 +19,10 @@ public class Film {
     private final LocalDate releaseDate;
     @Min(value = 1, message = "Продолжительность должна быть не меньше 1")
     private final int duration;
-    private Integer like = 0;
-    private Set<User> likesOfUsers = new HashSet<>();
+    private Set<Integer> likesOfUsers = new HashSet<>();
+    private int like = 0;
+    private Set<Genre> genres = new HashSet<>();
+    private Mpa mpa;
 
 
 }

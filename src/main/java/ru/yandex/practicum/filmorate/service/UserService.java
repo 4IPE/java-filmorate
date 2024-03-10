@@ -1,9 +1,10 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.Friend;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -14,10 +15,11 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
+
     private final UserStorage userStorage;
 
     @Autowired
-    public UserService(UserStorage userStorage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
@@ -51,32 +53,39 @@ public class UserService {
     public User addFriends(int mainUserId, int friendId) {
         User mainUser = userStorage.getUserById(mainUserId);
         User friend = userStorage.getUserById(friendId);
-        if (userStorage.getUserById(mainUserId) == null) {
+        if (mainUser == null) {
             throw new NotFoundException(User.class, mainUserId);
         }
-        if (userStorage.getUserById(friendId) == null) {
+        if (friend == null) {
             throw new NotFoundException(User.class, friendId);
         }
         mainUser.getFriends().add(friendId);
-        friend.getFriends().add(mainUserId);
+        mainUser.setStatus(true);
+        Friend friendObj = new Friend(mainUserId, friendId);
+        userStorage.addFriend(friendObj);
+        if (friend.getFriends().contains(mainUserId)) {
+            friend.getFriends().add(mainUserId);
+            friendObj.setStatus(true);
+            userStorage.addFriend(friendObj);
+        }
         return userStorage.getUserById(mainUserId);
     }
 
     public User removeFriends(int mainUserId, int friendId) {
-        if (userStorage.getUserById(mainUserId) == null) {
+        User mainUser = userStorage.getUserById(mainUserId);
+        User friend = userStorage.getUserById(friendId);
+        if (mainUser == null) {
             throw new NotFoundException(User.class, mainUserId);
         }
-        if (userStorage.getUserById(friendId) == null) {
+        if (friend == null) {
             throw new NotFoundException(User.class, friendId);
         }
-        if (!userStorage.getUserById(mainUserId).getFriends().contains(friendId)) {
-            throw new ValidationException("У пользователя с ID:" + mainUserId + "нету друга с ID" + friendId);
-        }
         userStorage.getUserById(mainUserId).getFriends().remove(friendId);
+        userStorage.deleteFriend(mainUserId, friendId);
         return userStorage.getUserById(mainUserId);
     }
 
-    public Collection<User> checkCommonFriends(int mainUserID, int otherId) {
+    public Collection<User> getCommonFriends(int mainUserID, int otherId) {
         return allFriends(mainUserID).stream()
                 .filter(user -> allFriends(otherId).contains(user))
                 .collect(Collectors.toList());
